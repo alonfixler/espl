@@ -1,6 +1,6 @@
 #include "xsum.h"
 
-int main(int argc, char** argv) {
+int calcCheckSum(File* file) {
     int c,flag=0;
     char* filename;
     FILE * file;
