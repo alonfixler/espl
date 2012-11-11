@@ -10,8 +10,7 @@ void createFileName(char* newFile,char* filename,int counter)
    newFile[0] = 0;
    strcat(newFile,"Files/");
    strcat(newFile,filename);
-   if (counter<10)
-      strcat(newFile,"0");
+   strcat(newFile,".");
    strcat(newFile,buff);
 }
 
@@ -21,10 +20,10 @@ int main(int argc, char **argv) {
     FILE * file,*fp;
     unsigned int checksum=0,totalSum=0;
     char buff[100];
-    int x=0;
+    int flagx=0;
     
     
-    while((c = getopt (argc, argv, "-hx:b:"))!=-1)
+    while((c = getopt (argc, argv, "hx:b:"))!=-1)
     {
       switch(c)
       {
@@ -35,7 +34,7 @@ int main(int argc, char **argv) {
 	      exit(0);
 	      break;
 	    case 'x':
-	      x=1;
+	      flagx=1;
 	      filename = optarg;
 	      break;
 	    case 'b':
@@ -47,30 +46,54 @@ int main(int argc, char **argv) {
       }
     }
     
+    int line = 48;
+
     char word[chunkSize];
     filename = argv[optind];
     file = fopen(filename,"r");
     memset(word,0,chunkSize);
-    while(!((read = fread(&word, 1,chunkSize, file))))
+   
+    while(((read = fread(&word, 1,chunkSize, file))))
     {
       char newFile[strlen(filename)+100];
       createFileName(newFile,filename,counter);
+    
+      printf("%s\n",newFile);
       fp = fopen(newFile,"w");
+      line=63;
+      printf("%d\n",line);
       checksum = calcCheckSum(fp);
+       line=66;
+      printf("%d\n",line);
       totalSum ^= checksum;
+       line=69;
+      printf("%d\n",line);
       sprintf(buff,"%d",checksum);
+       line=72;
+      printf("%d\n",line);
       //fwrite(buff,sizeof,1,fp);
       fwrite(word,read,1,fp);
+       line=76;
+      printf("%d\n",line);
       counter++;
+       line=79;
+      printf("%d\n",line);
       fclose(fp);
+       line=82;
+      printf("%d\n",line);
       memset(word,0,chunkSize);
     }
+    printf("%d\n",read);
+    line=70;
+    printf("%d\n",line);
     
-    if(x==1)
+    if(flagx==1)
     {
         file = fopen(filename,"r");
 	printf("0x%x\n",totalSum);
     }
+    line=78;
+    printf("%d\n",line);
     
       return 0;
 }
