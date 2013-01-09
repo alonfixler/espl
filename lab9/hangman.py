@@ -3,23 +3,22 @@ import random
 f = open('long-words.txt','r')
 text = f.read().splitlines()
 myline = random.choice(text)
-over=0
+over=False
 steps=6
-win=0
-a={}
-while !over:
-  while steps>0 and !win
-    print "steps from gallows: "+str(steps)+" word so far: "
-    for c in myline:
-      if c in a:
-	print c,
-      else:
-	print '-',
-    print "Guess a letter: "
-    c = sys.stdin.read(1)
-    print c
-    if c in a
-    
-
+win=False
+a=[]
+while steps>0 and not win:
+  win=True
+  print "steps from gallows: ",str(steps),", word so far: ",
+  for c in myline:
+    if c in a:
+      print c,
+    else:
+      print '_',
+      win=False
+  c = str(raw_input("\nGuess a letter: "))
+  a.append(c)
+  if c not in myline:
+    steps-=1
   
 f.close() 
