@@ -24,7 +24,9 @@ int main(int argc, char **argv) {
     FILE * file,*fp;
     unsigned int totalSum=0;
     char buff[100];
-    int flagx=0;
+    int flagx=0,count=0;
+    int i,pid,status,offset;
+    unsigned int checksum=0;
     
     
     while((c = getopt (argc, argv, "-hx:b:"))!=-1)
@@ -53,9 +55,7 @@ int main(int argc, char **argv) {
       }
     }
 
-    char word[chunkSize];
     file = fopen(filename,"r");
-    memset(word,0,chunkSize);
    
     struct stat st = {0};
     if (stat("Files", &st) == -1) {
@@ -64,40 +64,48 @@ int main(int argc, char **argv) {
     
     fseek(file,0,SEEK_END);
     int numOfBytes = ftell(file);
-    printf("%d\n",numOfBytes);
     int numOfProc = (numOfBytes+chunkSize-1)/chunkSize;
-    printf("%d\n",numOfProc);
     
-    for(int i=0;i<numOfProc;i++)
+    
+    for(i=0;i<numOfProc;i++)
     {
       int pid = fork();
-      if(pid==0)
+      if (pid== -1) 
       {
-	while(((read = fread(&word, 1,chunkSize, file))))
-	{
-	  unsigned int checksum=0;
-	  char newFile[strlen(filename)+100];
-	  createFileName(newFile,filename,counter);
-	  fp = fopen(newFile,"w+");
-	  fwrite(&checksum,sizeof(checksum),1,fp);
-	  fwrite(word,read,1,fp);
-	  checksum = calcCheckSum(fp);
-	  totalSum ^= checksum;
-	  rewind(fp);
-	  fwrite(&checksum,sizeof(checksum),1,fp);   
-	  counter++;
-	  fclose(fp);
-	  memset(word,0,chunkSize);
-	}
+	perror("fork");
+	exit(EXIT_FAILURE);
       }
+      
+      else if(pid==0)
+      {
+	unsigned int word = 0;
+	offset = i*(chunkSize-4);
+	fseek(file,offset,SEEK_SET);
+	read = fread(&word, 1,sizeof(word), file);
+	checksum = word;
+	char newFile[strlen(filename)+100];
+	createFileName(newFile,filename,counter);
+	fp = fopen(newFile,"w+");
+	count = read*2;
+	fwrite(&word,1,read,fp);
+	fwrite(&word,1,read,fp);
+	while(1)
+	{
+	  word=0;
+	  if(!((count<((chunkSize-4)+sizeof(checksum)))&&(read = fread(&word , 1 , sizeof(word) , file)))) break;
+	  checksum ^= word;
+	  count += read;
+	  fwrite(&word, 1 , read, fp);
+	}
+	fseek(fp , 0 , SEEK_SET);
+	fwrite(&checksum , 1 , sizeof(checksum), fp);
+	fclose (fp);
+      }
+      return 0;
     }
     
-    /*if(flagx==1)
-    {
-        file = fopen(filename,"r");
-	printf("0x%x\n",totalSum);
-    }*/
+   waitpid(pid, &status, 0);
     
-      return 0;
+   return 0;
 }
  
