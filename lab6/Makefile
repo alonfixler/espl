@@ -1,23 +1,26 @@
+%.o: %.asm
+	nasm -g -O1 -f elf -o $@ $<
+
 %.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+	gcc -m32 -g -nostdlib -fno-stack-protector -c -o $@ $<
 
-%.man: %.1
-	nroff -man $< > $@
+EXECS=bsplitasm bmerge
 
-all: bsplit bmerge bsplit.man bmerge.man
+all: clean $(EXECS)
 
-bsplit: bsplit.o xsum.o
-	$(CC) $(LDFLAGS) -o $@ $^
+bsplit: bsplit.o
+	gcc -m32 -Wall -o bsplit bsplit.c
 
-bmerge: bmerge.o xsum.o
-	$(CC) $(LDFLAGS) -o $@ $^
+bmerge: bmerge.o
+	gcc -m32 -Wall -o bmerge bmerge.c
 
-bsplit.o: bsplit.c xsum.h
-bmerge.o: bmerge.c xsum.h
-xsum.o: xsum.c xsum.h
-
-clean:
-	rm -f *.o 
+bsplitasm: bsplitasm.o
+	gcc -m32 -Wall -o $@ $^
+	
 
 distclean: clean
-	rm -f bsplit bmerge
+	rm -f bsplit bmerge bsplitasm
+
+
+clean:
+	rm -f *.o $(EXECS)
