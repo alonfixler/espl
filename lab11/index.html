@@ -1,0 +1,70 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Alon's site</title>
+    <script>
+      function noDigits(event)
+      {
+	if(48<=event.keyCode && event.keyCode<=57)
+	{
+	  event.returnValue = false;
+	}
+      }
+      function firstLetter(event)
+      {
+	substr
+      }
+      function showHint(str)
+      {
+	varxmlhttp;
+	if (str.length==0)
+	{
+	  document.getElementById("txtHint").innerHTML="";
+	  return;
+	}
+	if (window.XMLHttpRequest)
+	{// IE7+,Firefox,Chrome,Opera, Safari
+	  xmlhttp=new XMLHttpRequest();
+	}
+	else
+	{// code for IE6, IE5
+	  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlhttp.onreadystatechange=function()
+	{
+	  if (xmlhttp.readyState==4 &&xmlhttp.status==200)
+	  {
+	    document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
+	  }
+	}
+	xmlhttp.open("GET","http://www.cs.bgu.ac.il/~abedas/remote_service.php?q="+str,true);
+	xmlhttp.send();
+      }
+    </script>
+  </head>
+  <body>
+    <div  id="a1">
+      <form name="input" action="" method="get">
+	Username: <input onkeydown="noDigits(event)" type="text" name="username">
+	Password: <input type="password" name="password"><br>
+	<p>Sugeestion:</p>
+	<input onclick "firstLetter()" type="submit" value="Submit" />
+      </form>
+     <hr>
+    </div>
+    <div id="a2">
+      <h1 id="a21">Alon Fixler</h1>
+      <p id="a22">My name is Alon. I'm a nice boy.</p>
+    </div>
+    <div id="a3">
+      <img src="alon.jpg">
+    </div>
+    <hr>
+    <div id="a4">
+      <p>Pass your mouse over the<br>
+	 picture to get amazed!
+      </p>
+      <img src="cool.jpg">
+    </div>
+  </body>
+</html>

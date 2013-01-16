@@ -1,0 +1,27 @@
+body
+{
+  background-color:DarkGray;
+}
+#a1
+{
+  color:darkblue;
+  text-align:right;
+}
+#a1 p{padding-right:425px;}
+
+#a2 h1{text-align:left;text-decoration:underline;color:darkblue}
+#a2 p{color:black;text-align:left;}
+  
+#a3
+{
+  text-align:right;
+}
+#a4
+{
+  text-align:center;
+}
+#a4:hover
+{
+  visibility:hidden;
+}
+#a4 p{text-align:center;color:red;}
